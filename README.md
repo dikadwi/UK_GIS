@@ -2,56 +2,6 @@
 
 Implementasi sistem informasi geografis modern menggunakan OpenLayers, MongoDB, dan WhatsApp API.
 
-## Daftar Isi
-
-### Chapter 1: Pengenalan GIS dan Data Geospasial
-- Konsep dasar GIS
-- Tipe data geospasial (Point, LineString, Polygon)
-- Format data geospasial (GeoJSON, KML)
-- Sistem koordinat dan proyeksi
-
-### Chapter 2: OpenLayers
-- Setup dan konfigurasi OpenLayers
-- Menampilkan peta dasar
-- Layer dan kontrol peta
-- Interaksi dengan fitur geospasial
-- Styling dan simbologi
-
-### Chapter 3: Cloud Function dan MongoDB Geodata
-- Setup MongoDB Atlas
-- Implementasi geospatial indexes
-- Query operator spasial MongoDB
-- Cloud Function untuk operasi geospasial
-- Integrasi dengan frontend
-
-### Chapter 4: HTTP POST DATA
-- REST API untuk data geospasial
-- Validasi data GeoJSON
-- Bulk upload data
-- Error handling dan response format
-- Testing API endpoints
-
-### Chapter 5: Akses Pengguna dan Dokumentasi API
-- Autentikasi dan otorisasi
-- Role-based access control
-- API documentation dengan Swagger
-- Rate limiting dan security
-- Monitoring dan logging
-
-### Chapter 6: API Koordinat Terdekat dan Jalur
-- Nearest neighbor queries
-- Radius search
-- Routing dan pathfinding
-- Polygon containment
-- Spatial aggregation
-
-### Chapter 7: API Interaksi Interface WhatsApp
-- Setup WhatsApp Business API
-- Command handler untuk WhatsApp
-- Location sharing via WhatsApp
-- Notifikasi geofencing
-- Interactive responses
-
 ## Tech Stack
 
 ### Backend
@@ -212,6 +162,138 @@ def save_to_mongodb(geojson_data):
     finally:
         client.close()
 ```
+
+### 3.5 Menguji Endpoint API Petapedia
+
+Setelah data tersimpan di MongoDB, kita bisa menguji endpoint API dari Petapedia untuk mencari jalan terdekat dan informasi jalan.
+
+#### Setup Token WhatsAuth
+```python
+import requests
+import json
+
+def get_whatsauth_token(phone_number, otp):
+    """
+    Mendapatkan token WhatsAuth
+    """
+    url = "https://petapedia.if.co.id/api/whatsauth/login"
+    payload = {
+        "phone": phone_number,
+        "otp": otp
+    }
+    response = requests.post(url, json=payload)
+    return response.json().get('token')
+
+def test_nearest_road_api():
+    """
+    Menguji API pencarian jalan terdekat
+    """
+    # Koordinat untuk pengujian (contoh: Alun-alun Bandung)
+    lat = -6.9218571
+    lon = 107.6025123
+    
+    # Setup headers dengan token
+    headers = {
+        'Authorization': f'Bearer {YOUR_WHATSAUTH_TOKEN}'
+    }
+    
+    # Endpoint untuk mencari jalan terdekat
+    url = f"https://petapedia.if.co.id/api/nearestroad?lat={lat}&long={lon}"
+    
+    try:
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            data = response.json()
+            print("Jalan terdekat:")
+            print(json.dumps(data, indent=2))
+        else:
+            print(f"Error: {response.status_code}")
+            print(response.text)
+    except Exception as e:
+        print(f"Error: {str(e)}")
+
+def search_road_by_name(road_name):
+    """
+    Mencari jalan berdasarkan nama
+    """
+    headers = {
+        'Authorization': f'Bearer {YOUR_WHATSAUTH_TOKEN}'
+    }
+    
+    url = f"https://petapedia.if.co.id/api/roads/search?name={road_name}"
+    
+    try:
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            data = response.json()
+            print(f"\nHasil pencarian untuk '{road_name}':")
+            print(json.dumps(data, indent=2))
+        else:
+            print(f"Error: {response.status_code}")
+            print(response.text)
+    except Exception as e:
+        print(f"Error: {str(e)}")
+
+# Contoh penggunaan
+if __name__ == "__main__":
+    # 1. Dapatkan token (hanya perlu dilakukan sekali)
+    # token = get_whatsauth_token("YOUR_PHONE", "YOUR_OTP")
+    
+    # 2. Uji API jalan terdekat
+    test_nearest_road_api()
+    
+    # 3. Uji pencarian jalan
+    search_road_by_name("Asia Afrika")
+```
+
+#### Endpoint API yang Tersedia
+1. **Login WhatsAuth**
+   - URL: `https://petapedia.if.co.id/api/whatsauth/login`
+   - Method: POST
+   - Body: `{"phone": "string", "otp": "string"}`
+
+2. **Jalan Terdekat**
+   - URL: `https://petapedia.if.co.id/api/nearestroad`
+   - Method: GET
+   - Parameters: `lat` (latitude), `long` (longitude)
+   - Headers: Authorization Bearer Token
+
+3. **Pencarian Jalan**
+   - URL: `https://petapedia.if.co.id/api/roads/search`
+   - Method: GET
+   - Parameters: `name` (nama jalan)
+   - Headers: Authorization Bearer Token
+
+4. **Semua Jalan**
+   - URL: `https://petapedia.if.co.id/api/roads`
+   - Method: GET
+   - Headers: Authorization Bearer Token
+
+#### Response Format
+```json
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [[lon1, lat1], [lon2, lat2]]
+      },
+      "properties": {
+        "name": "Nama Jalan",
+        "highway": "Tipe Jalan"
+      }
+    }
+  ]
+}
+```
+
+#### Troubleshooting API
+- Pastikan token WhatsAuth masih valid
+- Periksa format koordinat (latitude: -90 to 90, longitude: -180 to 180)
+- Gunakan try-catch untuk menangani error
+- Periksa response status code dan pesan error
 
 ### 4. Membuat Visualisasi
 

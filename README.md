@@ -2,56 +2,6 @@
 
 Implementasi sistem informasi geografis modern menggunakan OpenLayers, MongoDB, dan WhatsApp API.
 
-## Daftar Isi
-
-### Chapter 1: Pengenalan GIS dan Data Geospasial
-- Konsep dasar GIS
-- Tipe data geospasial (Point, LineString, Polygon)
-- Format data geospasial (GeoJSON, KML)
-- Sistem koordinat dan proyeksi
-
-### Chapter 2: OpenLayers
-- Setup dan konfigurasi OpenLayers
-- Menampilkan peta dasar
-- Layer dan kontrol peta
-- Interaksi dengan fitur geospasial
-- Styling dan simbologi
-
-### Chapter 3: Cloud Function dan MongoDB Geodata
-- Setup MongoDB Atlas
-- Implementasi geospatial indexes
-- Query operator spasial MongoDB
-- Cloud Function untuk operasi geospasial
-- Integrasi dengan frontend
-
-### Chapter 4: HTTP POST DATA
-- REST API untuk data geospasial
-- Validasi data GeoJSON
-- Bulk upload data
-- Error handling dan response format
-- Testing API endpoints
-
-### Chapter 5: Akses Pengguna dan Dokumentasi API
-- Autentikasi dan otorisasi
-- Role-based access control
-- API documentation dengan Swagger
-- Rate limiting dan security
-- Monitoring dan logging
-
-### Chapter 6: API Koordinat Terdekat dan Jalur
-- Nearest neighbor queries
-- Radius search
-- Routing dan pathfinding
-- Polygon containment
-- Spatial aggregation
-
-### Chapter 7: API Interaksi Interface WhatsApp
-- Setup WhatsApp Business API
-- Command handler untuk WhatsApp
-- Location sharing via WhatsApp
-- Notifikasi geofencing
-- Interactive responses
-
 ## Tech Stack
 
 ### Backend
